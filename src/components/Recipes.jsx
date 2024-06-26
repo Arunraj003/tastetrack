@@ -1,132 +1,96 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { fetchRecipe as fetchRecipeData, fetchRecipes } from "../utils";
-import Loading from "../components/Loading";
-import Header from "../components/Header";
-import { AiFillPushpin } from "react-icons/ai";
-import { BsPatchCheck } from "react-icons/bs";
-import RecipeCard from "../components/RecipeCard";
+import React, { useEffect, useState } from 'react'
+import { BiSearchAlt2 } from 'react-icons/bi'
+import Loading from './Loading'
+import Searchbar from './SearchBar'
+import RecipeCard from './RecipeCard'
+import { fetchRecipes } from '../utils'
+import Button from './Button'
 
-const RecipeDetail = () => {
-  const [recipe, setRecipe] = useState(null);
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(false);
+const Recipes = () => {
+    const [recipes, setRecipes] = useState([])
+    const [query, setQuery] = useState('Vegan')
+    const [limit, setLimit] = useState(30)
+    const [loading, setLaoding] = useState(false)
 
-  const { id } = useParams();
-
-  const getRecipe = async (id) => {
-    try {
-      setLoading(true);
-
-      // Log the URL for debugging
-      const url = `https://api.edamam.com/search?r=http://www.edamam.com/ontologies/edamam.owl%23${id}&app_id=${process.env.REACT_APP_EDAMAM_APP_ID}&app_key=${process.env.REACT_APP_EDAMAM_API_KEY}`;
-      console.log('Fetching Recipe URL:', url);
-
-      // Fetch the recipe data
-      const data = await fetchRecipeData(id);
-      console.log('Fetched Recipe Data:', data);
-
-      // Ensure the data format is correct
-      if (data && Array.isArray(data) && data.length > 0) {
-        setRecipe(data[0]);
-        
-        if (data[0]?.label) {
-          const recommend = await fetchRecipes({ query: data[0].label, limit: 5 });
-          setRecipes(recommend);
-        }
-      }
-
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
+    const handleChange = (e) => {
+        setQuery(e.target.value)
     }
-  };
 
-  useEffect(() => {
-    getRecipe(id);
-  }, [id]);
+    const fetchRecipe = async () => {
+        try {
+            const data = await fetchRecipes({ query, limit })
 
-  if (loading) {
+            setRecipes(data)
+
+            setLaoding(false)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLaoding(false)
+        }
+    }
+
+    const handleSearchedRecipe = async (e) => {
+        e.preventDefault()
+        fetchRecipe()
+    }
+
+    const showMore = () => {
+        setLimit(prev => prev + 10)
+        fetchRecipe()
+    }
+
+    useEffect(() => {
+        setLaoding(true)
+
+        fetchRecipe()
+
+    }, [])
+
+    if (loading) {
+        return (
+            <Loading />
+        )
+    }
     return (
-      <div className="w-full h-[100vh] flex items-center justify-center">
-        <Loading />
-      </div>
-    );
-  }
+        <div className='w-full'>
+            <div className='w-full flex items-center justify-center pt-10 pb-5 px-0 md:px-10'>
+                <form className='w-full lg:w-2/4' onSubmit={handleSearchedRecipe}>
+                    <Searchbar placeholder="Chicken burger,pizza...."
+                        handleInputChange={handleChange}
+                        rightIcon={
+                            <BiSearchAlt2 className='text-gray-600' onClick={handleSearchedRecipe} />
+                        }
+                    />
+                </form>
 
-  return (
-    <div className="w-full">
-      <Header title={recipe?.label} image={recipe?.image} />
-
-      <div className="w-full px-4 lg:px-20 pt-5">
-        <div className="flex gap-10 items-center justify-center px-4">
-          <div className="flex flex-col justify-between">
-            <span className="text-white text-center border border-gray-500 py-1.5 px-2 rounded-full mb-2">
-              {recipe?.calories.toFixed(2)}
-            </span>
-            <p className="text-neutral-100 text-[12px] md:text-md">CALORIES</p>
-          </div>
-
-          <div className="flex flex-col justify-center">
-            <span className="text-white text-center border border-gray-500 py-1.5 rounded-full mb-2">
-              {recipe?.totalTime}
-            </span>
-            <p className="text-neutral-100 text-[12px] md:text-md">TOTAL TIME</p>
-          </div>
-
-          <div className="flex flex-col justify-center">
-            <span className="text-white text-center border border-gray-500 py-1.5 rounded-full mb-2">
-              {recipe?.yield}
-            </span>
-            <p className="text-neutral-100 text-[12px] md:text-md">SERVINGS</p>
-          </div>
-        </div>
-
-        <div className="w-full flex flex-col md:flex-row gap-8 py-20 px-4 md:px-10">
-          {/* LEFT SIDE */}
-          <div className="w-full md:w-2/4 md:border-r border-slate-800 pr-1">
-            <div className="flex flex-col gap-5">
-              <p className="text-green-500 text-2xl underline">Ingredients</p>
-              {recipe?.ingredientLines?.map((ingredient, index) => (
-                <p key={index} className="text-neutral-100 flex gap-2">
-                  <AiFillPushpin className="text-green-800 text-xl" /> {ingredient}
-                </p>
-              ))}
             </div>
 
-            <div className="flex flex-col gap-3 mt-20">
-              <p className="text-green-700 text-2xl underline">Health Labels</p>
-              <div className="flex flex-wrap gap-4">
-                {recipe?.healthLabels.map((item, index) => (
-                  <p
-                    className="text-white flex gap-2 bg-[#fff5f518] px-4 py-1 rounded-full"
-                    key={index}
-                  >
-                    <BsPatchCheck color="green" /> {item}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </div>
+            {
+                recipes?.length > 0 ? (
+                    <>
+                        <div className='w-full  flex flex-wrap gap-10 px-0 lg:px-10 py-10'>
+                            {
+                                recipes?.map((item, index) => (
+                                    <RecipeCard recipe={item} key={index} />))
+                            }
+                        </div>
 
-          {/* RIGHT SIDE */}
-          <div className="w-full md:w-2/4 2xl:pl-10 mt-20 md:mt-0">
-            {recipes?.length > 0 && (
-              <>
-                <p className="text-white text-2xl">Also Try This</p>
-                <div className="flex flex-wrap gap-6 px-1 pt-3">
-                  {recipes?.map((item, index) => (
-                    <RecipeCard recipe={item} key={index} />
-                  ))}
+                        <div className='flex w-full items-center justify-center py-10'>
+
+                            <Button
+                                title="Show More"
+                                containerStyle="bg-green-800 text-white px-3 py-1 rounded-full text-sm"
+                                handleClick={showMore}
+                            />
+                        </div>
+                    </>
+                ) : <div className='text-white w-full items-center justify-center py-10'>
+                    <p className='text-center'>No Recipe Found</p>
                 </div>
-              </>
-            )}
-          </div>
+            }
         </div>
-      </div>
-    </div>
-  );
-};
+    )
+}
 
-export default RecipeDetail;
+export default Recipes
