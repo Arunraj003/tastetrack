@@ -3,6 +3,7 @@ import logo from "../images/logo.png";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { AiOutlineClose } from "react-icons/ai";
 import Button from "./Button";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -29,22 +30,22 @@ const Navbar = () => {
 
         <ul className="hidden md:flex text-white gap-6">
           <li>
-            <a href="/">Home</a>
+            <Link to="/">Home</Link>
           </li>
 
           <li>
-            <a href="recipes">Explore</a>
+            <Link to="#search">Explore</Link>
           </li>
 
           <li>
-            <a href="/favourites">Favourites</a>
+            <Link to="#contact">Contact</Link>
           </li>
         </ul>
 
-        <Button
+{/*         <Button
           title="Sign in"
           containerStyle="hidden md:block bg-transparent border border-white text-white hover:bg-white hover:text-slate-700 rounded-full min-w-[130px]"
-        />
+        /> */}
 
         <button className="text-white block md:hidden text-xl" onClick={() => setOpen(prev => !prev)}>
             {open ? <AiOutlineClose /> :
