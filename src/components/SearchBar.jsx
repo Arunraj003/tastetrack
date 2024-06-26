@@ -11,7 +11,7 @@ const SearchBar = ({
 }) => {
   return (
     <div id="explore>
-      <div className="relative">
+      <div className="search">
         <input
           type={type || "text"}
           name={name}
