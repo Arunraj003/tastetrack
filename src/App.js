@@ -17,15 +17,15 @@ function Layout() {
 
 function App() {
   return (
-    <div className="bg-black">
+      <div className="bg-black">
       <Routes>
         <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="recipes/:id" 
         element={<RecipeDetail />} />
         </Route>
-      </Routes>
-    </div>
+        </Routes>
+        </div>
   );
 }
 
