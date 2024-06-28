@@ -7,7 +7,6 @@ import { AiFillPushpin } from "react-icons/ai"
 import { BsPatchCheck } from "react-icons/bs"
 import RecipeCard from '../components/RecipeCard'
 
-
 const RecipeDetail = () => {
   const [recipe, setRecipe] = useState(null)
   const [recipes, setRecipes] = useState([])
@@ -38,7 +37,7 @@ const RecipeDetail = () => {
   }
 
   useEffect(() => {
-    getRecipe(id)
+      getRecipe(id)
   }, [id])
 
 

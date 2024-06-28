@@ -10,7 +10,7 @@ const SearchBar = ({
   rightIcon,
 }) => {
   return (
-    <div id="explore>
+    <div id="explore">
       <div className="search">
         <input
           type={type || "text"}
