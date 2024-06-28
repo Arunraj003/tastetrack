@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import logo from "../images/logo.png";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { AiOutlineClose } from "react-icons/ai";
-import Button from "./Button";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -42,10 +41,7 @@ const Navbar = () => {
           </li>
         </ul>
 
-{/*         <Button
-          title="Sign in"
-          containerStyle="hidden md:block bg-transparent border border-white text-white hover:bg-white hover:text-slate-700 rounded-full min-w-[130px]"
-        /> */}
+
 
         <button className="text-white block md:hidden text-xl" onClick={() => setOpen(prev => !prev)}>
             {open ? <AiOutlineClose /> :

@@ -44,7 +44,6 @@ const Recipes = () => {
         setLaoding(true)
 
         fetchRecipe()
-
     }, [])
 
     if (loading) {
